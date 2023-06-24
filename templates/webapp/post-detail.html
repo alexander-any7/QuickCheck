@@ -1,0 +1,62 @@
+{% extends 'webapp/base.html' %}
+{% load static %}
+{% load helpers %}
+{% block title %} {{post.title|default_if_none:"Post"}} {% endblock title %}
+{% block content %}
+    <!-- ======= Blog Details Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row g-5">
+
+          <div class="col-lg-12">
+
+            <article class="blog-details">
+              <h2 class="title">{{ post.title|default_if_none:""}}</h2>
+
+              <div class="meta-top">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i>{{post.by}}</li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i><time datetime="{{ post.time|convert_time }}">{{ post.time|convert_time }}</time></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i>{{ post.kids|length }}</li>
+                </ul>
+              </div><!-- End meta top -->
+
+              <div class="content">
+                {{post.text|safe}}
+              </div><!-- End post content -->
+
+              <div class="meta-bottom">
+                <i class="bi bi-folder"></i>
+                <ul class="cats">
+                  <li><a href="#">{{ post.type }}</a></li>
+                </ul>
+              </div><!-- End meta bottom -->
+
+            </article><!-- End blog post -->
+            
+            <div class="comments">
+              <h4 class="comments-count">{{ post.kids|length }} Comments</h4>
+              {% for comment in comments %}
+              <div id="comment-4" class="comment">
+                <div class="d-flex">
+                  <div>
+                    <h5 class="fst-italic fw-semibold">{{comment.by}}</h5>
+                    <time class="fst-italic"  datetime="{{comment.time|convert_time}}">{{comment.time|convert_time}}</time>
+                    <p>
+                      {{comment.text|safe}}
+                    </p>
+                  </div>
+                </div>
+
+              </div><!-- End comment #4 -->
+              {% endfor %}
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Blog Details Section -->
+
+{% endblock content %}

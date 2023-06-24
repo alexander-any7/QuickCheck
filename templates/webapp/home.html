@@ -1,0 +1,99 @@
+{% extends 'webapp/base.html' %}
+{% load static %}
+{% load helpers %}
+{% block title %} QuickCheck {% endblock title %}
+{% block breadcrumbs %}
+<div class="row">
+  <div class="col">
+    <form action="" method="get">
+      Filter By: <br>
+      {% for filter in filters %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{filter}}" value="{{filter}}" name="type">
+        <label class="form-check-label text-capitalize" for="{{filter}}">{{filter}}</label>
+      </div>
+      {% endfor %}
+      <a href="{% url 'webapp:home' %}">Clear Filters</a>
+      <br>
+      <input type="submit" value="Apply Filter" class="btn btn-outline-success btn-sm mt-2">
+    </form>
+    <div class="row">
+      
+    </div>
+  </div>
+  <div class="col-4 offset-2">
+    <form action="" method="get" class="d-flex">
+      <input type="text" name="search" id="search" class="form-control me-2">
+      <input type="submit" value="Search" class="btn btn-outline-success btn-sm">
+    </form>
+  </div>
+</div>
+{% endblock breadcrumbs %}
+{% block content %}
+    <!-- ======= Blog Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
+
+        <h2 class="text-center mb-3">Latest News</h2>
+
+        <div class="row gy-4 posts-list">          
+        {% for post in posts %}
+            <div class="col-xl-4 col-md-6">
+              <article>
+                <p class="post-category text-capitalize">{{post.type}}</p>
+
+                <h2 class="title">
+                  {% if post.text %}
+                    <a href="{% url 'webapp:post-detail' post.id %}">{{ post.title }}</a>
+                  {% else %}
+                    <a href="{{post.url}}" target="_blank">{{ post.title }}</a>
+                  {% endif %}
+                </h2>
+
+                <div class="row">
+                  <div class="post-meta">
+                    <p class="post-author-list fst-italic">{{ post.by }}</p>
+                    <div class="col">
+                      <p class="post-date">
+                        <time datetime="{{ post.time|convert_time }}">{{ post.time|convert_time }}</time>
+                      </p>
+                    </div>
+                    <div class="col text-lg-end">
+                      Score: {{post.score|default_if_none:"0"}}
+                    </div>
+                  </div>
+                </div>
+
+              </article>
+            </div><!-- End post list item -->
+        {% endfor %}
+
+        </div><!-- End blog posts list -->
+        {% if is_paginated %}
+            <div class="blog-pagination">
+              <ul class="justify-content-center">
+                {% if page_obj.has_previous %}
+                  <li><a href="?page=1">First</a></li>
+                  <li><a href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                  {% if page_obj.number == num %}
+                    <li class="active"><a href="?page={{ num }}">{{ num }}</a></li>
+                  {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li><a href="?page={{ num }}">{{ num }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                  <li><a href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                  <li><a href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+                {% endif %}
+              </ul>
+            </div><!-- End blog pagination -->
+          
+        {% endif %}
+
+      </div>
+    </section><!-- End Blog Section -->
+
+{% endblock content %}
